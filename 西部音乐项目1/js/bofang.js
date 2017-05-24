@@ -1,20 +1,20 @@
 
-	var data=[];
-	function bofang(data_all){
-	data =data_all.data.list;
+  var data=[];
+  function bofang(data_all){
+  data =data_all.data.list;
     };
     function $(id){return document.getElementById(id)};
 // 创建列表
 window.onload=function () {
     var listmusic = $("listmusic");
-	createList(data);
-	function createList(data){
-		// listmusic.innerHTML = "";
-		
-		for (var i = 0; i < data.length; i++) {
-			
-			var div=document.createElement("div");
-			    div.className="gg";
+  createList(data);
+  function createList(data){
+    // listmusic.innerHTML = "";
+    
+    for (var i = 0; i < data.length; i++) {
+      
+      var div=document.createElement("div");
+          div.className="gg";
                 div.id="gg";
             var span0=document.createElement("span");
                 span0.id="kk"+i;
@@ -24,7 +24,7 @@ window.onload=function () {
                 spa.className="xu";
                 spa.innerHTML = i+1;
                 div.appendChild(spa);    
-			var span=document.createElement("span");
+      var span=document.createElement("span");
                 span.className="ss";
                 span.innerHTML = data[i].music;
                 div.appendChild(span);
@@ -36,18 +36,10 @@ window.onload=function () {
                 span3.className="zz";
                 span3.innerHTML = data[i].time;
                 div.appendChild(span3);
-        //     var audio=document.createElement("audio");
-        //     audio.className = "video";
-        //     audio.id = "video";
-        // var source=document.createElement("source");
-        //         source.src = "music/"+data[i].play+".mp3";
-        //        audio.appendChild(source);
-        //         div.appendChild(audio)
        
-			listmusic.appendChild(div);
-		};
+      listmusic.appendChild(div);
+    };
     }// 数组结束
-    console.log(listmusic);
     
 // 点击选中 
  var play=document.getElementById("play");       
@@ -74,45 +66,91 @@ window.onload=function () {
     var animate = $("animate");    
     var gg=document.getElementsByClassName("gg");
     
-
-    for (var i = 0; i < data.length; i++) {
-// 循环
-        gg[i].index = i;
-        gg[i].ondblclick=function () {
-          var key1 = this.index;
-        
-
-        var audio=document.createElement("audio");
+     var audio=document.createElement("audio");
             audio.className = "video";
             audio.id = "video";
-        var source=document.createElement("source");
-                source.src = "music/"+data[key1].play+".mp3";
-               audio.appendChild(source);
-                gg[key1].appendChild(audio)
-        console.log(gg[key1]);
-        if(gg[key1].children[5].paused || gg[key1].children[5].ended){
+            audio.autoplay="autoplay";
+              
+                listmusic.appendChild(audio)
+        console.log(listmusic);
+    for (var i = 0; i < data.length; i++) {
+// 循环
+        
+        gg[i].index = i;
+        gg[i].onclick=function () {
+          var key1 = this.index;
+          audio.src = "music/"+data[key1].play+".mp3";
+          console.log(audio);
           play.className="pause";
-          gg[key1].children[5].play();
-        }else{
-          play.className="play";
-          gg[key1].children[5].pause();
-        }
+          
+          // console.log(audio);
+          // console.log(audio);
+          // 时间显示 
+var duration=document.getElementsByClassName("duration")[0];
+var current=document.getElementsByClassName("current")[0];
+var shiian = $("shiian");     
+       audio.addEventListener("timeupdate",function  () {
+        
+          var alltime = Math.floor(audio.duration);
+          var mintime = Math.floor(alltime/60);
+          var secondtime = alltime - mintime*60;
+          console.log(audio.duration);
+          console.log(audio.currentTime);
+          var mintime=mintime<10?'0' + mintime:mintime;
+          var secondtime=secondtime<10?'0' + secondtime:secondtime;
 
-        // gg[key1].children[5].play();
-        // play.className="pause"; 
+          var alltimes = Math.floor(audio.currentTime);
+          var mintimes = Math.floor(alltimes/60);
+          var secondtimes = alltimes - mintimes*60;
+          var mintimes=mintimes<10?'0' + mintimes:mintimes;
+          var secondtimes=secondtimes<10?'0' + secondtimes:secondtimes;
+         
+          
+        setTimeout(function () {
+          shiian.innerHTML = mintimes+" "+':'+" "+secondtimes+" "+
+        "/"+" "+mintime+" "+':'+" "+secondtime;
+        },1000)
+          
+// 歌词同步
+//         var tim = audio.currentTime.toFixed(2); 
+// var lrcItem = document.getElementsByClassName("lrcItem")[0];      
+// lrcItem.style.marginTop = '-'+ tim + 'px';
+        
+      },false); 
+                // 下一首     
+var right = $("right");
+  right.onclick=function () {
+          key1++;
+          play.className="pause";
+          audio.src = "music/"+data[key1].play+".mp3";console.log(audio);
+          geshou.innerHTML = data[key1].music;
 
+ }
+var left = $("left");
+  left.onclick=function () {
+          key1--;
+          play.className="pause";
+          audio.src = "music/"+data[key1].play+".mp3";console.log(audio);
+          geshou.innerHTML = data[key1].music;
+ }
+
+         
+ // 歌曲名    
+var geshou = $("geshou");     
+geshou.innerHTML = data[key1].music;
         //进度条
-      gg[key1].children[5].addEventListener("timeupdate",function  () {
-        var scales=gg[key1].children[5].currentTime/gg[key1].children[5].duration;
-              bar.style.width=progress.offsetWidth*scales+"px";
+        var one=document.getElementsByClassName("bofang_one")[0];
+      audio.addEventListener("timeupdate",function  () {
+        var scales=audio.currentTime/audio.duration;
+        bar.style.width=progress.offsetWidth*scales+"px";
         control.style.left=progress.offsetWidth*scales+"px";
       },false);
 
-      //进度条拖拽
+      // 进度条拖拽
            control.onmousedown=function  (e) {
-         gg[key1].children[5].pause();
+         audio.pause();
          document.onmousemove=function  (e) {
-         var leftv=e.clientX-progress.offsetLeft-animate.offsetLeft;
+         var leftv=e.clientX-one.offsetLeft-animate.offsetLeft;
          if(leftv<=0){
           leftv=0;
          }
@@ -123,60 +161,49 @@ window.onload=function () {
          }
        document.onmouseup=function  () {
          var scales=control.offsetLeft/progress.offsetWidth;
-               gg[key1].children[5].currentTime =gg[key1].children[5].duration*scales;
-          gg[key1].children[5].play();
+               audio.currentTime =audio.duration*scales;
+          audio.play();
         document.onmousemove=null;
         document.onmousedown=null;
        }
            } 
-
-           // 时间显示 
-var duration=document.getElementsByClassName("duration")[0];
-var current=document.getElementsByClassName("current")[0];
-var shiian = $("shiian");     
-       gg[key1].children[5].addEventListener("timeupdate",function  () {
-        
-        var other = gg[key1].children[5].duration % 3600;
-        var minute = Math.floor (other / 60); 
-        var second = parseInt((other % 60).toFixed (2));
-        
-        var others = gg[key1].children[5].currentTime % 3600;
-        var fens = Math.floor (others / 60);
-        var miaos = parseInt((others % 60).toFixed (2));
- 
-        var minutes = minute<10?"0"+minute:minute;
-        var seconds = second<10?"0"+second:second;
-        var fen = fens<10?"0"+fens:fens;
-        var miao = miaos<10?"0"+miaos:miaos;
-        shiian.innerHTML = fen +" "+ ":"+" " + miao+" "+
-        "/"+" "+ minutes +" "+ ":"+" " +seconds;
-        
-        
-      },false);     
+    
     
     
       
       //播放按钮
       
       play.onclick=function  () {
-        if(gg[key1].children[5].paused || gg[key1].children[5].ended){
+        if(audio.paused || audio.ended){
           play.className="pause";
-          gg[key1].children[5].play();
+          audio.play();
         }else{
           play.className="play";
-          gg[key1].children[5].pause();
+          audio.pause();
         }
-      }      
-    }// 点击选项
-    
-
-    }// for循环结束
-
-    
+      }
       
+    }// 点击选项
 
+ }// for循环结束
+     
+// 静音
+ var voices = true;
+ var yinliangtu = $("yinliangtu");
+  yinliangtu.onclick = function(){
+    if (voices === true) {
+      audio.muted = true;
+      console.log(yinliangtu)
+      yinliangtu.innerHTML = "<img style='margin-top:22px;margin-left:-4px' src='imgs/QQ截图20170517103238.png'>";
+      voices = false;
+    } else{
+      audio.muted = false;
+      yinliangtu.innerHTML = "<img class='yinliangtu' src='imgs/bofang_51.png'>";
+      voices = true;
+    };
+  }   
     
-         
+var one3 = $("bofang_one"); console.log(one3.offsetLeft)        
 var video=document.getElementById("video");       
  //音量条容器
 var volume=document.getElementById("volume");
@@ -187,18 +214,29 @@ var volumeControl=document.getElementById("volumeControl");
 //音量调整
 volumeControl.onmousedown=function(e){  
 document.onmousemove=function(e){
-var leftb=e.clientX-volume.offsetLeft-box.offsetLeft;
+  var one1=document.getElementById("tt");
+  
+var leftb=e.clientX-volume.offsetLeft-one1.offsetLeft-one3.offsetLeft;
+console.log(volume.offsetLeft)
+console.log(e.clientX)
+console.log(leftb)
+
 if(leftb<=0){
 leftb=0;
-}if (leftb>=volume.offsetWidth) {
+yinliangtu.innerHTML = "<img style='margin-top:22px;margin-left:-4px' src='imgs/QQ截图20170517103238.png'>";
+}
+if (leftb>=volume.offsetWidth) {
 leftb=volume.offsetWidth;
+}
+if (leftb>0) {
+  yinliangtu.innerHTML = "<img class='yinliangtu' src='imgs/bofang_51.png'>";
 }
 volumeControl.style.left=leftb+"px";
 volumeBar.style.width=leftb+"px";
 }
 document.onmouseup=function(){
 
-video.volume=volumeControl.offsetLeft/volume.offsetWidth;
+audio.volume=volumeControl.offsetLeft/volume.offsetWidth;
 document.onmousedown=null;
 document.onmousemove=null;
 }

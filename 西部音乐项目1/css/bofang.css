@@ -287,8 +287,8 @@ border-radius: 5px;
 cursor: pointer;
 }
 #volumeControl{
-width: 8px;
-height: 8px;
+width: 10px;
+height: 10px;
 border-radius: 5px;
 background-color: #d2d2d2;
 position: absolute;
